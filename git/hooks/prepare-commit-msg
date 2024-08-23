@@ -1,0 +1,16 @@
+#! /bin/bash
+
+BRANCH=$(git symbolic-ref --short HEAD | grep --color -vE 'main|master')
+ISSUE=$(echo $BRANCH | gawk '{ match($0, /(LK-[0-9]+)/, arr); print arr[0] }')
+echo "BRANCH: ${BRANCH:?Cannot be on main or master branch}"
+echo "ISSUE: ${ISSUE:-Not an issue branch}"
+
+if [[ -n "${ISSUE}" ]]; then
+    commit_msg_filepath=$1
+    commit_type=${2:-}
+    commit_hash=${3:-}
+
+#    printf "prepare-commit-msg: %s, %s, %s\n" ${commit_msg_filepath} ${commit_type} ${commit_hash}
+
+    sed -i -e "1s/^/\[${ISSUE}\] /" ${commit_msg_filepath}
+fi
