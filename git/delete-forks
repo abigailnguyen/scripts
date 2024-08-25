@@ -1,14 +1,14 @@
 #! /bin/bash
-TOKEN=$(gh auth token)
-USER=${1:?Needs to specify user}
-curl -H "Authorization: Bearer ${TOKEN}" \
-  -H "X-GitHub-Api-Version: 2022-11-28"\
-  -H "Accept: application/vnd.github+json" \
-  -v "https://api.github.com/orgs/${USER}/repos?type=fork&per_page=100&page=1" \
-| jq -r '.[].name' >> out
-
-awk '{print "${USER}/" $0}' ./out > ./to-delete
-for repo in $(<to-delete); 
-  do curl -H "Authorization: Bearer ${TOKEN}" -X DELETE "https://api.github.com/orgs/$repo" ; 
-  sleep 0.5; 
-done
+  2
+  3 USER=${USER:?Needs to specify user}
+  4 HOSTNAME=${HOSTNAME:?Need to define a hostname}
+  5 TOKEN=$(gh auth token -h $HOSTNAME)
+  6 curl -L \
+  7   -H "Authorization: Bearer ${TOKEN}" \
+  8   -H "X-GitHub-Api-Version: 2022-11-28"\
+  9   -H "Accept: application/vnd.github+json" \
+ 10   -v "https://api.github.com/orgs/${USER}/repos?type=fork&per_page=100&page=1" \
+ 11 >> out
+ 12 #| jq -r '.[].name' >> out
+ 13
+ 14 awk '{print "${USER}/" $0}' ./out > ./to-delete
